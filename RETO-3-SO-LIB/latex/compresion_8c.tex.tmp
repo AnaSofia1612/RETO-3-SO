@@ -1,0 +1,102 @@
+\doxysection{compresion.\+c File Reference}
+\hypertarget{compresion_8c}{}\label{compresion_8c}\index{compresion.c@{compresion.c}}
+
+
+Implementación del módulo de compresión/descompresión RLE.  
+
+
+{\ttfamily \#include "{}compresion.\+h"{}}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+Include dependency graph for compresion.\+c\+:
+% FIG 0
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+unsigned char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{compresion_8c_ac3136eb2966f9100d3e2d4643b7900db}{comprimir\+\_\+bloques}} (char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}bloques, int num\+\_\+bloques, int \texorpdfstring{$\ast$}{*}size\+\_\+out)
+\begin{DoxyCompactList}\small\item\em Comprime un array de bloques de texto con RLE y construye el payload binario completo (File\+Header + N×(Block\+Header + datos RLE)). \end{DoxyCompactList}\item 
+char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{compresion_8c_ae43caedbe3307ff80d041bc0ef7bc533}{descomprimir\+\_\+bloques}} (unsigned char \texorpdfstring{$\ast$}{*}data, int size, int \texorpdfstring{$\ast$}{*}out\+\_\+len)
+\begin{DoxyCompactList}\small\item\em Descomprime el payload leído de disco y recupera el texto original. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{compresion_8c_a594c0b2a58072d0c19d9ca405ceccbff}{imprimir\+\_\+metadata}} (unsigned char \texorpdfstring{$\ast$}{*}data, int size)
+\begin{DoxyCompactList}\small\item\em Imprime un resumen legible de la metadata del File\+Header. Útil para depuración y para la demostración empírica con strace/perf. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Implementación del módulo de compresión/descompresión RLE. 
+
+Algoritmo RLE (Run-\/\+Length Encoding)\+:
+\begin{DoxyItemize}
+\item Codifica secuencias de bytes repetidos como \mbox{[}cantidad\mbox{]}\mbox{[}carácter\mbox{]}.
+\item Ejemplo\+: "{}\+AAABBC"{} → \{3,\textquotesingle{}A\textquotesingle{}, 2,\textquotesingle{}B\textquotesingle{}, 1,\textquotesingle{}C\textquotesingle{}\} (6 bytes → 6 bytes en este caso, pero "{}\+AAAAAAAABC"{} → \{10,\textquotesingle{}A\textquotesingle{},1,\textquotesingle{}B\textquotesingle{},1,\textquotesingle{}C\textquotesingle{}\} = 10 bytes → 6 bytes).
+\item La cantidad se satura en 255 (máximo de un unsigned char) para no romper el formato de 2 bytes por run.
+\end{DoxyItemize}
+
+Formato binario en disco\+: \mbox{[}File\+Header 16B\mbox{]}\mbox{[}Block\+Header 8B\mbox{]}\mbox{[}RLE data...\mbox{]}\mbox{[}Block\+Header 8B\mbox{]}\mbox{[}RLE...\mbox{]}...
+
+Garantías de alineación\+: {\bfseries{attribute}}((packed)) en las structs elimina el padding del compilador, asegurando que sizeof(\+File\+Header)==16 y sizeof(\+Block\+Header)==8 siempre, independientemente de la arquitectura. Esto es crítico para que la lectura con mmap() en io.\+c interprete los bytes correctamente. 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{compresion_8c_ac3136eb2966f9100d3e2d4643b7900db}\label{compresion_8c_ac3136eb2966f9100d3e2d4643b7900db} 
+\index{compresion.c@{compresion.c}!comprimir\_bloques@{comprimir\_bloques}}
+\index{comprimir\_bloques@{comprimir\_bloques}!compresion.c@{compresion.c}}
+\doxysubsubsection{\texorpdfstring{comprimir\_bloques()}{comprimir\_bloques()}}
+{\footnotesize\ttfamily unsigned char \texorpdfstring{$\ast$}{*} comprimir\+\_\+bloques (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{bloques,  }\item[{int}]{num\+\_\+bloques,  }\item[{int \texorpdfstring{$\ast$}{*}}]{size\+\_\+out }\end{DoxyParamCaption})}
+
+
+
+Comprime un array de bloques de texto con RLE y construye el payload binario completo (File\+Header + N×(Block\+Header + datos RLE)). 
+
+
+\begin{DoxyParams}{Parameters}
+{\em bloques} & Array de punteros a bloques de 4KB (de preparar\+\_\+bloques). \\
+\hline
+{\em num\+\_\+bloques} & Cantidad de bloques en el array. \\
+\hline
+{\em size\+\_\+out} & \mbox{[}salida\mbox{]} Tamaño en bytes del buffer retornado. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Buffer dinámico con todo el payload listo para guardar. El llamador debe liberarlo con free(). NULL si hay error de memoria. 
+\end{DoxyReturn}
+\Hypertarget{compresion_8c_ae43caedbe3307ff80d041bc0ef7bc533}\label{compresion_8c_ae43caedbe3307ff80d041bc0ef7bc533} 
+\index{compresion.c@{compresion.c}!descomprimir\_bloques@{descomprimir\_bloques}}
+\index{descomprimir\_bloques@{descomprimir\_bloques}!compresion.c@{compresion.c}}
+\doxysubsubsection{\texorpdfstring{descomprimir\_bloques()}{descomprimir\_bloques()}}
+{\footnotesize\ttfamily char \texorpdfstring{$\ast$}{*} descomprimir\+\_\+bloques (\begin{DoxyParamCaption}\item[{unsigned char \texorpdfstring{$\ast$}{*}}]{data,  }\item[{int}]{size,  }\item[{int \texorpdfstring{$\ast$}{*}}]{out\+\_\+len }\end{DoxyParamCaption})}
+
+
+
+Descomprime el payload leído de disco y recupera el texto original. 
+
+Valida el magic number y reconstruye el texto concatenando todos los bloques descomprimidos en orden.
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & Buffer con el payload binario (File\+Header + bloques). \\
+\hline
+{\em size} & Tamaño total del buffer en bytes. \\
+\hline
+{\em out\+\_\+len} & \mbox{[}salida\mbox{]} Longitud del texto recuperado (sin \textquotesingle{}\textbackslash{}0\textquotesingle{}). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+String con el texto recuperado (liberar con free()). NULL si el formato es inválido o hay error de memoria. 
+\end{DoxyReturn}
+\Hypertarget{compresion_8c_a594c0b2a58072d0c19d9ca405ceccbff}\label{compresion_8c_a594c0b2a58072d0c19d9ca405ceccbff} 
+\index{compresion.c@{compresion.c}!imprimir\_metadata@{imprimir\_metadata}}
+\index{imprimir\_metadata@{imprimir\_metadata}!compresion.c@{compresion.c}}
+\doxysubsubsection{\texorpdfstring{imprimir\_metadata()}{imprimir\_metadata()}}
+{\footnotesize\ttfamily void imprimir\+\_\+metadata (\begin{DoxyParamCaption}\item[{unsigned char \texorpdfstring{$\ast$}{*}}]{data,  }\item[{int}]{size }\end{DoxyParamCaption})}
+
+
+
+Imprime un resumen legible de la metadata del File\+Header. Útil para depuración y para la demostración empírica con strace/perf. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & Buffer con el payload binario. \\
+\hline
+{\em size} & Tamaño del buffer. \\
+\hline
+\end{DoxyParams}

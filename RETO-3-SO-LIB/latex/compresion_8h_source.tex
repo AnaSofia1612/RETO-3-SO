@@ -1,0 +1,39 @@
+\doxysection{compresion.\+h}
+\hypertarget{compresion_8h_source}{}\label{compresion_8h_source}\mbox{\hyperlink{compresion_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#ifndef\ COMPRESION\_H}}
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#define\ COMPRESION\_H}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#include\ <stddef.h>}}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{comment}{/*\ ───\ Magic\ number\ del\ formato\ ──────────────────────────────────────────────\ */}}
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#define\ MAGIC\_NUMBER\ \ 0x434C4552\ \ \ }\textcolor{comment}{/*\ "{}RELC"{}\ en\ little-\/endian\ →\ "{}RLEC"{}\ */}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\#define\ VERSION\ \ \ \ \ \ \ 1}}
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#define\ BLOCK\_SIZE\ \ \ \ 4096}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \textcolor{comment}{/*\ ───\ Estructuras\ del\ formato\ binario\ ───────────────────────────────────────\ */}}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00044\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{compresion_8h_ab898071398b359603a35c202e9c65f3b}{\_\_attribute\_\_}}((packed))\ \{}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keywordtype}{int}\ magic;\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keywordtype}{int}\ version;\ \ \ \ \ \ }
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keywordtype}{int}\ num\_bloques;\ \ }
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keywordtype}{int}\ size\_total;\ \ \ }
+\DoxyCodeLine{00049\ \}\ FileHeader;}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00054\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{compresion_8h_ab898071398b359603a35c202e9c65f3b}{\_\_attribute\_\_}}((packed))\ \{}
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keywordtype}{int}\ bloque\_id;\ \ \ \ }
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keywordtype}{int}\ size\_bloque;\ \ }
+\DoxyCodeLine{00057\ \}\ BlockHeader;}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \textcolor{comment}{/*\ ───\ API\ pública\ ───────────────────────────────────────────────────────────\ */}}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00072\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}*\ \mbox{\hyperlink{compresion_8h_ac3136eb2966f9100d3e2d4643b7900db}{comprimir\_bloques}}(\textcolor{keywordtype}{char}**\ bloques,\ \textcolor{keywordtype}{int}\ num\_bloques,\ \textcolor{keywordtype}{int}*\ size\_out);}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00086\ \textcolor{keywordtype}{char}*\ \mbox{\hyperlink{compresion_8h_ae43caedbe3307ff80d041bc0ef7bc533}{descomprimir\_bloques}}(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}*\ data,\ \textcolor{keywordtype}{int}\ size,\ \textcolor{keywordtype}{int}*\ out\_len);}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00095\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{compresion_8h_a594c0b2a58072d0c19d9ca405ceccbff}{imprimir\_metadata}}(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}*\ data,\ \textcolor{keywordtype}{int}\ size);}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ COMPRESION\_H\ */}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

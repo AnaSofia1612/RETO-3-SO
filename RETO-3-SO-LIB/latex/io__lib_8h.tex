@@ -1,0 +1,26 @@
+\doxysection{io\+\_\+lib.\+h File Reference}
+\hypertarget{io__lib_8h}{}\label{io__lib_8h}\index{io\_lib.h@{io\_lib.h}}
+
+
+Módulo de I/O usando librería estándar de C (stdio.\+h).  
+
+
+This graph shows which files directly or indirectly include this file\+:
+% FIG 0
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{io__lib_8h_a7679b660992985e0b880952301c357d8}\label{io__lib_8h_a7679b660992985e0b880952301c357d8} 
+void {\bfseries guardar\+\_\+archivo\+\_\+lib} (const char \texorpdfstring{$\ast$}{*}filename, unsigned char \texorpdfstring{$\ast$}{*}data, int size)
+\item 
+\Hypertarget{io__lib_8h_a40fc9be1d5db2f18aeabf23573249895}\label{io__lib_8h_a40fc9be1d5db2f18aeabf23573249895} 
+unsigned char \texorpdfstring{$\ast$}{*} {\bfseries leer\+\_\+archivo\+\_\+lib} (const char \texorpdfstring{$\ast$}{*}filename, int \texorpdfstring{$\ast$}{*}size\+\_\+out)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Módulo de I/O usando librería estándar de C (stdio.\+h). 
+
+En lugar de syscalls directas (open/write/mmap), usa\+: fopen() → abre el archivo fwrite() → escribe con buffer interno de la libc fread() → lee con buffer interno de la libc fclose() → cierra y vacía el buffer
+
+La libc agrupa las escrituras internamente (buffer de 8KB por defecto), reduciendo la cantidad de syscalls reales al kernel vs escribir directo. 

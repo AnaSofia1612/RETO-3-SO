@@ -1,0 +1,40 @@
+\doxysection{io\+\_\+lib.\+c File Reference}
+\hypertarget{io__lib_8c}{}\label{io__lib_8c}\index{io\_lib.c@{io\_lib.c}}
+
+
+I/O con librería estándar de C.  
+
+
+{\ttfamily \#include "{}io\+\_\+lib.\+h"{}}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+Include dependency graph for io\+\_\+lib.\+c\+:
+% FIG 0
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{io__lib_8c_aff578711ef5de4cb9c7769117c12c22e}\label{io__lib_8c_aff578711ef5de4cb9c7769117c12c22e} 
+\#define {\bfseries BLOCK\+\_\+\+SIZE\+\_\+\+LIB}~4096
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{io__lib_8c_a7679b660992985e0b880952301c357d8}\label{io__lib_8c_a7679b660992985e0b880952301c357d8} 
+void {\bfseries guardar\+\_\+archivo\+\_\+lib} (const char \texorpdfstring{$\ast$}{*}filename, unsigned char \texorpdfstring{$\ast$}{*}data, int size)
+\item 
+\Hypertarget{io__lib_8c_a40fc9be1d5db2f18aeabf23573249895}\label{io__lib_8c_a40fc9be1d5db2f18aeabf23573249895} 
+unsigned char \texorpdfstring{$\ast$}{*} {\bfseries leer\+\_\+archivo\+\_\+lib} (const char \texorpdfstring{$\ast$}{*}filename, int \texorpdfstring{$\ast$}{*}size\+\_\+out)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+I/O con librería estándar de C. 
+
+Diferencia clave con io.\+c\+:
+
+io.\+c (syscalls directas) \doxylink{io__lib_8c}{io\+\_\+lib.\+c} (librería estándar) ───────────────────────────── ────────────────────────────── open() → fd del kernel fopen() → FILE\texorpdfstring{$\ast$}{*} con buffer en heap write() → va directo al kernel fwrite() → acumula en buffer de libc mmap() → mapea en memoria fread() → copia desde buffer de libc close() → cierra fd fclose() → vacía buffer y cierra fd
+
+La libc mantiene un buffer interno y solo llama a write() cuando ese buffer se llena o cuando se llama fclose()/fflush(). Eso puede reducir el número de syscalls, pero agrega una copia extra en memoria (heap → buffer libc → kernel).
+
+Con archivos pequeños (\texorpdfstring{$<$}{<} 8KB) fwrite() puede resultar en UNA sola syscall write() al hacer fclose(), mientras que io.\+c hace una por cada chunk de 4KB. Con archivos grandes, el comportamiento converge. 

@@ -1,0 +1,144 @@
+\doxysection{compresion.\+h File Reference}
+\hypertarget{compresion_8h}{}\label{compresion_8h}\index{compresion.h@{compresion.h}}
+
+
+Módulo de compresión RLE con header y metadata binaria.  
+
+
+{\ttfamily \#include $<$stddef.\+h$>$}\newline
+Include dependency graph for compresion.\+h\+:
+% FIG 0
+This graph shows which files directly or indirectly include this file\+:
+% FIG 1
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{compresion_8h_a54061e5993a5517320d425f44408cc86}\label{compresion_8h_a54061e5993a5517320d425f44408cc86} 
+\#define {\bfseries MAGIC\+\_\+\+NUMBER}~0x434\+C4552   /\texorpdfstring{$\ast$}{*} "{}RELC"{} en little-\/endian → "{}RLEC"{} \texorpdfstring{$\ast$}{*}/
+\item 
+\Hypertarget{compresion_8h_a1c6d5de492ac61ad29aec7aa9a436bbf}\label{compresion_8h_a1c6d5de492ac61ad29aec7aa9a436bbf} 
+\#define {\bfseries VERSION}~1
+\item 
+\Hypertarget{compresion_8h_ad51ded0bbd705f02f73fc60c0b721ced}\label{compresion_8h_ad51ded0bbd705f02f73fc60c0b721ced} 
+\#define {\bfseries BLOCK\+\_\+\+SIZE}~4096
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{compresion_8h_ab898071398b359603a35c202e9c65f3b}{\+\_\+\+\_\+attribute\+\_\+\+\_\+}} ((packed))
+\begin{DoxyCompactList}\small\item\em Encabezado global del archivo .bin {\bfseries{attribute}}((packed)) garantiza que no hay padding entre campos, dando un tamaño exacto y predecible en disco. \end{DoxyCompactList}\item 
+unsigned char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{compresion_8h_ac3136eb2966f9100d3e2d4643b7900db}{comprimir\+\_\+bloques}} (char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}bloques, int num\+\_\+bloques, int \texorpdfstring{$\ast$}{*}size\+\_\+out)
+\begin{DoxyCompactList}\small\item\em Comprime un array de bloques de texto con RLE y construye el payload binario completo (File\+Header + N×(Block\+Header + datos RLE)). \end{DoxyCompactList}\item 
+char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{compresion_8h_ae43caedbe3307ff80d041bc0ef7bc533}{descomprimir\+\_\+bloques}} (unsigned char \texorpdfstring{$\ast$}{*}data, int size, int \texorpdfstring{$\ast$}{*}out\+\_\+len)
+\begin{DoxyCompactList}\small\item\em Descomprime el payload leído de disco y recupera el texto original. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{compresion_8h_a594c0b2a58072d0c19d9ca405ceccbff}{imprimir\+\_\+metadata}} (unsigned char \texorpdfstring{$\ast$}{*}data, int size)
+\begin{DoxyCompactList}\small\item\em Imprime un resumen legible de la metadata del File\+Header. Útil para depuración y para la demostración empírica con strace/perf. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{compresion_8h_abf49af82a715aaf14f885f2d59f74965}\label{compresion_8h_abf49af82a715aaf14f885f2d59f74965} 
+{\bfseries File\+Header}
+\item 
+\Hypertarget{compresion_8h_a7f78b0a71807ece1d759a076f8a91db0}\label{compresion_8h_a7f78b0a71807ece1d759a076f8a91db0} 
+{\bfseries Block\+Header}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Módulo de compresión RLE con header y metadata binaria. 
+
+Define el formato del archivo binario comprimido\+:
+
+┌──────────────────────────────────────────┐ │ File\+Header (16 bytes, packed) │ │ magic \+: 0x524\+C4543 ("{}\+RLEC"{}) │ │ version \+: 1 │ │ num\+\_\+bloques\+: cantidad de bloques │ │ size\+\_\+total \+: bytes comprimidos totales │ ├──────────────────────────────────────────┤ │ Por cada bloque\+: │ │ Block\+Header (8 bytes, packed) │ │ bloque\+\_\+id \+: índice del bloque │ │ size\+\_\+bloque \+: bytes comprimidos │ │ Datos comprimidos (RLE\+: \mbox{[}cnt\mbox{]}\mbox{[}char\mbox{]}) │ └──────────────────────────────────────────┘
+
+Pipeline\+: char\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*} bloques → \doxylink{compresion_8h_ac3136eb2966f9100d3e2d4643b7900db}{comprimir\+\_\+bloques()} → unsigned char\texorpdfstring{$\ast$}{*} payload unsigned char\texorpdfstring{$\ast$}{*} payload → guardar\+\_\+archivo() → file.\+bin file.\+bin → leer\+\_\+archivo() → \doxylink{compresion_8h_ae43caedbe3307ff80d041bc0ef7bc533}{descomprimir\+\_\+bloques()} → char\texorpdfstring{$\ast$}{*} 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{compresion_8h_ab898071398b359603a35c202e9c65f3b}\label{compresion_8h_ab898071398b359603a35c202e9c65f3b} 
+\index{compresion.h@{compresion.h}!\_\_attribute\_\_@{\_\_attribute\_\_}}
+\index{\_\_attribute\_\_@{\_\_attribute\_\_}!compresion.h@{compresion.h}}
+\doxysubsubsection{\texorpdfstring{\_\_attribute\_\_()}{\_\_attribute\_\_()}}
+{\footnotesize\ttfamily struct \+\_\+\+\_\+attribute\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{(packed)}]{ }\end{DoxyParamCaption})}
+
+
+
+Encabezado global del archivo .bin {\bfseries{attribute}}((packed)) garantiza que no hay padding entre campos, dando un tamaño exacto y predecible en disco. 
+
+Encabezado por bloque — precede los datos RLE de cada bloque. \texorpdfstring{$<$}{<} Número mágico para validar el formato
+
+\texorpdfstring{$<$}{<} Versión del formato (actualmente 1) ~\newline
+
+
+\texorpdfstring{$<$}{<} Cantidad total de bloques comprimidos ~\newline
+
+
+\texorpdfstring{$<$}{<} Suma de todos los bytes comprimidos ~\newline
+
+
+\texorpdfstring{$<$}{<} Índice del bloque (0-\/based) ~\newline
+
+
+\texorpdfstring{$<$}{<} Bytes comprimidos en este bloque ~\newline
+\Hypertarget{compresion_8h_ac3136eb2966f9100d3e2d4643b7900db}\label{compresion_8h_ac3136eb2966f9100d3e2d4643b7900db} 
+\index{compresion.h@{compresion.h}!comprimir\_bloques@{comprimir\_bloques}}
+\index{comprimir\_bloques@{comprimir\_bloques}!compresion.h@{compresion.h}}
+\doxysubsubsection{\texorpdfstring{comprimir\_bloques()}{comprimir\_bloques()}}
+{\footnotesize\ttfamily unsigned char \texorpdfstring{$\ast$}{*} comprimir\+\_\+bloques (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{bloques,  }\item[{int}]{num\+\_\+bloques,  }\item[{int \texorpdfstring{$\ast$}{*}}]{size\+\_\+out }\end{DoxyParamCaption})}
+
+
+
+Comprime un array de bloques de texto con RLE y construye el payload binario completo (File\+Header + N×(Block\+Header + datos RLE)). 
+
+
+\begin{DoxyParams}{Parameters}
+{\em bloques} & Array de punteros a bloques de 4KB (de preparar\+\_\+bloques). \\
+\hline
+{\em num\+\_\+bloques} & Cantidad de bloques en el array. \\
+\hline
+{\em size\+\_\+out} & \mbox{[}salida\mbox{]} Tamaño en bytes del buffer retornado. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Buffer dinámico con todo el payload listo para guardar. El llamador debe liberarlo con free(). NULL si hay error de memoria. 
+\end{DoxyReturn}
+\Hypertarget{compresion_8h_ae43caedbe3307ff80d041bc0ef7bc533}\label{compresion_8h_ae43caedbe3307ff80d041bc0ef7bc533} 
+\index{compresion.h@{compresion.h}!descomprimir\_bloques@{descomprimir\_bloques}}
+\index{descomprimir\_bloques@{descomprimir\_bloques}!compresion.h@{compresion.h}}
+\doxysubsubsection{\texorpdfstring{descomprimir\_bloques()}{descomprimir\_bloques()}}
+{\footnotesize\ttfamily char \texorpdfstring{$\ast$}{*} descomprimir\+\_\+bloques (\begin{DoxyParamCaption}\item[{unsigned char \texorpdfstring{$\ast$}{*}}]{data,  }\item[{int}]{size,  }\item[{int \texorpdfstring{$\ast$}{*}}]{out\+\_\+len }\end{DoxyParamCaption})}
+
+
+
+Descomprime el payload leído de disco y recupera el texto original. 
+
+Valida el magic number y reconstruye el texto concatenando todos los bloques descomprimidos en orden.
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & Buffer con el payload binario (File\+Header + bloques). \\
+\hline
+{\em size} & Tamaño total del buffer en bytes. \\
+\hline
+{\em out\+\_\+len} & \mbox{[}salida\mbox{]} Longitud del texto recuperado (sin \textquotesingle{}\textbackslash{}0\textquotesingle{}). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+String con el texto recuperado (liberar con free()). NULL si el formato es inválido o hay error de memoria. 
+\end{DoxyReturn}
+\Hypertarget{compresion_8h_a594c0b2a58072d0c19d9ca405ceccbff}\label{compresion_8h_a594c0b2a58072d0c19d9ca405ceccbff} 
+\index{compresion.h@{compresion.h}!imprimir\_metadata@{imprimir\_metadata}}
+\index{imprimir\_metadata@{imprimir\_metadata}!compresion.h@{compresion.h}}
+\doxysubsubsection{\texorpdfstring{imprimir\_metadata()}{imprimir\_metadata()}}
+{\footnotesize\ttfamily void imprimir\+\_\+metadata (\begin{DoxyParamCaption}\item[{unsigned char \texorpdfstring{$\ast$}{*}}]{data,  }\item[{int}]{size }\end{DoxyParamCaption})}
+
+
+
+Imprime un resumen legible de la metadata del File\+Header. Útil para depuración y para la demostración empírica con strace/perf. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & Buffer con el payload binario. \\
+\hline
+{\em size} & Tamaño del buffer. \\
+\hline
+\end{DoxyParams}

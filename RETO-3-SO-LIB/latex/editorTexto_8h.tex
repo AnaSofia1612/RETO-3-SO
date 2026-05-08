@@ -1,0 +1,29 @@
+\doxysection{editor\+Texto.\+h File Reference}
+\hypertarget{editorTexto_8h}{}\label{editorTexto_8h}\index{editorTexto.h@{editorTexto.h}}
+
+
+Modulo prinicipal de edicion de texto, tiene la logica del buffer\+: el cual es recibir el texto digitado por el usuario con un malloc(), que se va incrementando si supera el tamaño dado con un realloc y separacion de bloques de texto en 4KB \+: se realizan dos malloc, para el arrelgo de punteros que tienen la direccion de memoria de los bloques, y la memoria de los bloques en si que contienen el valor que digito el usuario, y estan separados en 4KB los bloques.  
+
+
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+Include dependency graph for editor\+Texto.\+h\+:
+% FIG 0
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{editorTexto_8h_a5173c95832f005595464fee4763e0739}\label{editorTexto_8h_a5173c95832f005595464fee4763e0739} 
+char \texorpdfstring{$\ast$}{*} {\bfseries editar\+Texto} ()
+\item 
+\Hypertarget{editorTexto_8h_a7be3580175b731f9c200dcfef2c8bd4a}\label{editorTexto_8h_a7be3580175b731f9c200dcfef2c8bd4a} 
+char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*} {\bfseries preparar\+\_\+bloques} (const char \texorpdfstring{$\ast$}{*}texto, int \texorpdfstring{$\ast$}{*}num\+\_\+bloques)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Modulo prinicipal de edicion de texto, tiene la logica del buffer\+: el cual es recibir el texto digitado por el usuario con un malloc(), que se va incrementando si supera el tamaño dado con un realloc y separacion de bloques de texto en 4KB \+: se realizan dos malloc, para el arrelgo de punteros que tienen la direccion de memoria de los bloques, y la memoria de los bloques en si que contienen el valor que digito el usuario, y estan separados en 4KB los bloques. 
+
+Modulo prinicipal de edicion de texto, tiene la logica del buffer y separacion de bloques de texto en 4KB.
+
+se realiza la debida liberacion de la memoria en el main.
